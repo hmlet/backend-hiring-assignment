@@ -29,3 +29,10 @@ class PhotoSerializer(ModelSerializer):
 		]
 
 
+#We can also make a serializer field in our serializer
+#defined above, make one a write only and the other one
+#as a read only
+class CaptionEditSerializer(ModelSerializer):
+	class Meta:
+		model = Photo
+		fields = ['captions']
