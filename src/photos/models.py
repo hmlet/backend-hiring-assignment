@@ -16,6 +16,7 @@ class Photo(models.Model):
 	captions 	   		= models.CharField(max_length=250)
 	is_draft 			= models.BooleanField(default=False)
 	published_date   	= models.DateField(auto_now=False, auto_now_add=True)
-	
+
 	def __str__(self):
 		return self.captions
+

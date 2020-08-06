@@ -1,6 +1,10 @@
+from .permissions import IsOwner
+from rest_framework.permissions import IsAuthenticated
 from photos.models import Photo
 
 from rest_framework.filters import OrderingFilter,SearchFilter
+from rest_framework.response import Response
+from rest_framework import status
 
 from rest_framework.generics import (
 	ListAPIView,
@@ -14,7 +18,7 @@ from .serializers import (
 	CaptionEditSerializer
 )
 
-from rest_framework.permissions import IsAuthenticated
+
 
 class PhotosListAPIView(ListAPIView):
 	queryset = Photo.objects.all()
@@ -61,15 +65,22 @@ class PhotoCreateAPIView(CreateAPIView):
 class UpdatePhotoCaptionsAPIView(UpdateAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = CaptionEditSerializer
-	permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated,IsOwner]
 	lookup_field  = 'pk'
 
 
 class DestroyPhotoAPIView(DestroyAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = PhotoSerializer
-	permission_classes = [IsAuthenticated]
+	permission_classes = [IsAuthenticated,IsOwner]
 	lookup_field = 'pk'
+
+	# def destroy(self, request, *args, **kwargs):
+	# 	photo = self.get_object()
+	# 	if photo.user != request.user:
+	# 		return Response({"message":"You do not have permission to delete this object"}, status =status.HTTP_403_FORBIDDEN)
+	# 	photo.delete()
+	# 	return Response({"message":"object deleted"},status=status.HTTP_200_OK)
 
 
 
