@@ -1,5 +1,7 @@
 from photos.models import Photo
 
+from rest_framework.filters import OrderingFilter,SearchFilter
+
 from rest_framework.generics import (
 	ListAPIView,
 	CreateAPIView,
@@ -12,29 +14,34 @@ from .serializers import (
 	CaptionEditSerializer
 )
 
+
+
 class PhotosListAPIView(ListAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = PhotoSerializer
+	filter_backends = [OrderingFilter,SearchFilter]
+	ordering_fields = ['published_date']
+	search_fields =   ['user__username']
 
 
 
 class UserPhotosListApiView(ListAPIView):
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
-   
-    def get_queryset(self):
-        user = self.request.user
-        qs = Photo.objects.filter(user=user,is_draft=False)
-        return qs
+	queryset = Photo.objects.all()
+	serializer_class = PhotoSerializer
+
+	def get_queryset(self):
+		user = self.request.user
+		qs = Photo.objects.filter(user=user,is_draft=False)
+		return qs
 
 class UserDraftPhotosListApiView(ListAPIView):
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
+	queryset = Photo.objects.all()
+	serializer_class = PhotoSerializer
 
-    def get_queryset(self):
-        user = self.request.user
-        qs = Photo.objects.filter(user=user,is_draft=True)
-        return qs
+	def get_queryset(self):
+		user = self.request.user
+		qs = Photo.objects.filter(user=user,is_draft=True)
+		return qs
 
 
 class PhotoCreateAPIView(CreateAPIView):
@@ -52,9 +59,9 @@ class UpdatePhotoCaptionsAPIView(UpdateAPIView):
 
 
 class DestroyPhotoAPIView(DestroyAPIView):
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
-    lookup_field = 'pk'
+	queryset = Photo.objects.all()
+	serializer_class = PhotoSerializer
+	lookup_field = 'pk'
 
 
 
