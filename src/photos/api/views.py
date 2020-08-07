@@ -16,7 +16,6 @@ from rest_framework.generics import (
 )
 
 
-
 from .serializers import (
 	PhotoSerializer,
 	CaptionEditSerializer
