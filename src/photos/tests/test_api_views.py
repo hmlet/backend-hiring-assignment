@@ -41,7 +41,7 @@ class PhotoListAllTest(APITestCase):
 
 	def generate_temp_image(self,name,width,height):
 		image_file = BytesIO()
-		image = Image.new('RGB', size=(100, 100),color='red')
+		image = Image.new('RGB', size=(width, height),color='red')
 		image.save(image_file, 'png')
 		image_file.seek(0)
 		return File(image_file, name=name)
@@ -119,7 +119,7 @@ class UserDraftAndPhotoListTest(APITestCase):
 
 	def generate_temp_image(self,name,width,height):
 		image_file = BytesIO()
-		image = Image.new('RGB', size=(100, 100),color='red')
+		image = Image.new('RGB', size=(width, height),color='red')
 		image.save(image_file, 'png')
 		image_file.seek(0)
 		return File(image_file, name=name)
@@ -174,7 +174,7 @@ class CreatePhotoTestCases(APITestCase):
 
 	def generate_temp_image(self,name,width,height):
 		image_file = BytesIO()
-		image = Image.new('RGB', size=(100, 100),color='red')
+		image = Image.new('RGB', size=(width, height),color='red')
 		image.save(image_file, 'png')
 		image_file.seek(0)
 		return File(image_file, name=name)
@@ -235,6 +235,42 @@ class CreatePhotoTestCases(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
+
+
+	def test_create_photo_invalid_width(self):
+		auth_token = 'JWT '+self.get_user_access_token()
+		self.client.credentials(HTTP_AUTHORIZATION=auth_token)
+		response = self.client.post(
+			reverse('create_photo'),
+			data={"image":self.generate_temp_image('test_image.png',1100,100),"caption":"test caption","is_draft":True},
+			format = 'multipart'
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+	def test_create_photo_invalid_height(self):
+		auth_token = 'JWT '+self.get_user_access_token()
+		self.client.credentials(HTTP_AUTHORIZATION=auth_token)
+		response = self.client.post(
+			reverse('create_photo'),
+			data={"image":self.generate_temp_image('test_image.png',100,1100),"caption":"test caption","is_draft":True},
+			format = 'multipart'
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+	def test_create_photo_invalid_width_height(self):
+		auth_token = 'JWT '+self.get_user_access_token()
+		self.client.credentials(HTTP_AUTHORIZATION=auth_token)
+		response = self.client.post(
+			reverse('create_photo'),
+			data={"image":self.generate_temp_image('test_image.png',1100,1100),"caption":"test caption","is_draft":True},
+			format = 'multipart'
+		)
+	
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
 class UpdatePhotoCaptionsTestCases(APITestCase):
 
 	def setUp(self):
@@ -256,7 +292,7 @@ class UpdatePhotoCaptionsTestCases(APITestCase):
 
 	def generate_temp_image(self,name,width,height):
 		image_file = BytesIO()
-		image = Image.new('RGB', size=(100, 100),color='red')
+		image = Image.new('RGB', size=(width, height),color='red')
 		image.save(image_file, 'png')
 		image_file.seek(0)
 		return File(image_file, name=name)
@@ -334,7 +370,7 @@ class DeletePhotoTestCases(APITestCase):
 
 	def generate_temp_image(self,name,width,height):
 		image_file = BytesIO()
-		image = Image.new('RGB', size=(100, 100),color='red')
+		image = Image.new('RGB', size=(width, height),color='red')
 		image.save(image_file, 'png')
 		image_file.seek(0)
 		return File(image_file, name=name)

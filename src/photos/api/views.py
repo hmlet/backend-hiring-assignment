@@ -22,12 +22,16 @@ from .serializers import (
 	CaptionEditSerializer
 )
 
+from .pagination import (
+	PhotoPageNumberPagination
+)
 
 
 class PhotosListAPIView(ListAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = PhotoSerializer
 	filter_backends = [OrderingFilter,SearchFilter]
+	pagination_class = PhotoPageNumberPagination
 	ordering_fields = ['published_date']
 	search_fields =   ['user__username']
 
@@ -36,6 +40,7 @@ class PhotosListAPIView(ListAPIView):
 class UserPhotosListApiView(ListAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = PhotoSerializer
+	pagination_class = PhotoPageNumberPagination
 	permission_classes = [IsAuthenticated]
 
 	def get_queryset(self):
@@ -49,6 +54,7 @@ class UserPhotosListApiView(ListAPIView):
 class UserDraftPhotosListApiView(ListAPIView):
 	queryset = Photo.objects.all()
 	serializer_class = PhotoSerializer
+	pagination_class = PhotoPageNumberPagination
 	permission_classes = [IsAuthenticated]
 
 	def get_queryset(self):
@@ -77,13 +83,3 @@ class DestroyPhotoAPIView(DestroyAPIView):
 	serializer_class = PhotoSerializer
 	permission_classes = [IsAuthenticated,IsOwner]
 	lookup_field = 'pk'
-
-
-class PostPhoto(APIView):
-	def post(self,request):
-		print("post request",request.POST)
-
-
-
-
-
