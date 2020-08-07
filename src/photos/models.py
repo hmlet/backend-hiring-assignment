@@ -12,7 +12,9 @@ def upload_location(instance,filename):
 
 class Photo(models.Model):
 	user        		= models.ForeignKey(User,on_delete=models.CASCADE)
-	image 		 		= models.ImageField(upload_to=upload_location)
+	image 		 		= models.ImageField(upload_to=upload_location,width_field='image_width',height_field='image_height')
+	image_width 		= models.PositiveIntegerField()
+	image_height 		= models.PositiveIntegerField()
 	captions 	   		= models.CharField(max_length=250)
 	is_draft 			= models.BooleanField(default=False)
 	published_date   	= models.DateField(auto_now=False, auto_now_add=True)
