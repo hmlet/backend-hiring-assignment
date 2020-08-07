@@ -9,9 +9,6 @@ from rest_framework.serializers import (
 
 
 
-
-
-
 class UserSerializer(ModelSerializer):
 	class Meta:
 		model = User
@@ -28,7 +25,7 @@ class PhotoSerializer(ModelSerializer):
 		fields = [
 			'user',
 			'image',
-			'captions',
+			'caption',
 			'is_draft',
 			'published_date'
 		]
@@ -49,4 +46,4 @@ class PhotoSerializer(ModelSerializer):
 class CaptionEditSerializer(ModelSerializer):
 	class Meta:
 		model = Photo
-		fields = ['captions']
+		fields = ['caption']
