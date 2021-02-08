@@ -1,0 +1,26 @@
+{%extends "photos/base.html"%}
+{% load crispy_forms_tags %}
+{% block content%}
+    <div class= "content-section">
+        <!-- <div class="media">
+            <img class ="rounded account-img" src="{{object.image.url}}"> -->
+            <!-- <img class="rounded account-img" src="{{ user.profile.image.url }}"> -->
+            <!-- <div class="media-body">
+                <h2 class="account-heading">{{user.username}}</h2>
+                <p class="text-secondary">{{user.email}}</p>
+            </div> -->
+        <!-- </div> -->
+        <form method="POST" enctype="multipart/form-data">
+            {%csrf_token%}
+            <fieldset class ="form-group">
+                <!-- <img class ="rounded account-img" src="{{post.image.url}}"> -->
+                <legend class = "border-bottom mb-4">Delete Post</legend>
+                <h2>Are you sure want to delete?{{object.content}}</h2>
+                {{ form|crispy }}            </fieldset>
+            <div class ="form-group">
+                <button class= "btn btn-outline-danger" type ="submit">Yes Delete</button>
+                <a class= "btn btn-outline-secondary" href ="{% url 'post-detail' object.id%}">cancel</a>
+            </div>
+        </form>
+    </div>      
+{%endblock content%}

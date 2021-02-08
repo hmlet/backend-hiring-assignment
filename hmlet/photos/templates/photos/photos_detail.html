@@ -1,0 +1,35 @@
+{%extends "photos/base.html"%}
+{% block content%}      
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <img class ="rounded-circle article-img" src ={{object.author.profile.image.url}}>
+        <a class="mr-2" href="{% url 'user-posts' object.author.username %}">{{ object.author }}</a>
+        <h5 class="text-muted">{{ object.published_date | date:"F d, Y"}}</h5>
+        {%for tag in object.tags.all%}
+      <a   href ="{% url 'caption_by_tags' tag.slug %}">{{tag.name}}</a>
+      {%endfor%}
+
+      
+      </div>
+
+      <img class ="rounded account-img" src="{{object.image.url}} " width="1000", height="1000">
+      <h2 class="article-title" >{{ object.caption }}</h2>
+      <div  class="article-content" style="color: red" >
+        <span>Draft : </span>{{ object.is_draft }}
+      </div>
+        
+      {%if object.author == user %}
+        <div>
+          <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
+          <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+        </div>
+      {%endif%}
+
+      
+    </div> 
+  </article>      
+            
+{%endblock %}
+
+ 
