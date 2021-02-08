@@ -1,0 +1,52 @@
+{%extends "photos/base.html"%}
+{% block content%} 
+<h1 class="mb-3">Photos by tags{{view.kwargs.tags}}({{page_obj.paginator.count}})</h1>     
+{%for post in posts%}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <img class ="rounded-circle article-img" src ={{post.author.profile.image.url}}>
+          <a class="mr-2" href="{% url 'user-posts' post.author.username %}">{{ post.author }}</a>
+          <h5 class="text-muted">{{ post.published_date | date:"F d, Y"}}</h5>
+          {%for tag in post.tags.all%}
+          <a  class=" btn btn-outline-info mb-4" href ="{% url 'caption_by_tags' tag.slug %}">{{tag.name}}</a>
+          {%endfor%}
+          
+
+      </div>
+      <img class ="rounded account-img" src="{{post.image.url}}" width="400", height="400">
+      <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.caption }}</a>
+      <div  class="article-content" style="color: red" >
+        <span>Draft : </span>{{ post.is_draft }}
+      </div>
+
+      
+    </div>      
+  </article>
+{%endfor %}
+{% if is_paginated %}
+
+      {% if page_obj.has_previous%}
+      <a class ="btn btn-outline-info mb-4" href="?page=1">First</a>
+      <a class ="btn btn-outline-info mb-4" href="?page={{page_obj.previous_page_number}}">Previous</a>
+      {%endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {%if page_obj.number == num %}
+          <a class ="btn btn-info mb-4" href="?page={{ num }}">{{num}}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+          <a class ="btn btn-outline-info mb-4" href="?page={{ num }}">{{num}}</a>
+        {%endif%}
+      {%endfor%}
+
+     
+
+
+
+        {% if page_obj.has_next%}
+      <a class ="btn btn-outline-info mb-4" href="?page={{page_obj.next_page_number}}">Next</a>
+      <a class ="btn btn-outline-info mb-4" href="?page={{page_obj.paginator.num_pages}}">Last</a>
+      {%endif %}
+
+{%endif%}
+{%endblock %}

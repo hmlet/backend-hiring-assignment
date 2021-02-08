@@ -7,7 +7,6 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 
 from taggit.models import Tag
 
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -17,48 +16,56 @@ def home(request):
         'posts':photos.objects.all()
     }
     return render(request,'photos/home.html',context)
+
 # Create your views here.
 
+# FOR POST LIST VIEW 
+# IN THIS SORTING CAN BE DONE BY PUBLISHED_DATE, IS_DRAFT. I DIDN'T INTEGRATE  ALL OF THESE INTO INTEGRATE FRONTEND. BUT THE QUERY CAN BE MODIFIED HERE
+# LIKE ordering=['-published_date'], ['published_date'], ['is_draft'], ['-is_draft'] 
+# THIS CAN BE FOLOWED BY BELOW ALL THE FUNCTIONS 
 class PostListView(ListView):
     model = photos
     template_name = 'photos/home.html'
     context_object_name = 'posts'
-    # ordering = ['published_date']
+    ordering = ['-published_date']
     paginate_by = 2
     ordering =['-is_draft']
 
+#FOR TAGS LIST VIEW
 class TagListView(ListView):
-    model = photos
-    template_name = 'photos/photos_list.html'
+    model = photos  
+    template_name = 'photos/tags_list.html'
     context_object_name = 'posts'
-    # ordering = ['published_date']
+    ordering = ['-published_date']
     paginate_by = 2
-    ordering =['-is_draft']
+    # ordering =['-is_draft']
 
     def get_queryset(self):
-        tags = get_object_or_404(User, username=self.kwargs.get('tags'))
-        return photos.objects.filter(tags_slug = tags)
+        # tag = get_object_or_404(User, tags=self.kwargs.get('tags'))
+        return photos.objects.filter(tags = self.kwargs.get('tags'))
 
-        # return photos.objects.filter(author=user)
+        # return photos.objects.filter(tags=tags)
 
     
      
-
+#FOR PHOTOS ACCORDING TO THE USER VIEW 
 class UserPostListView(ListView):
     model = photos
     template_name = 'photos/photos_list.html'
     context_object_name = 'posts'
-    # ordering = ['published_date']
+    ordering = ['-published_date']
     paginate_by = 2
 
     def get_queryset(self):
         user = get_object_or_404(User, username=self.kwargs.get('username'))
-        return photos.objects.filter(author=user).order_by('published_date').order_by('is_draft')
+        return photos.objects.filter(author=user).order_by('published_date').order_by('-is_draft')
 
-
+#FOR SPECIFIC PHOTO POST VIEW IT SHOWS ONLY ONE WHICH IS REQUIRED 
 class PostDetailView(DetailView):
     model = photos
-    
+
+
+# FOR CREATING A NEW POST
 class PostCreateView(LoginRequiredMixin,CreateView):
     model = photos
     fields= ['image','caption','is_draft','tags']
@@ -67,6 +74,7 @@ class PostCreateView(LoginRequiredMixin,CreateView):
         form.instance.author = self.request.user
         return super().form_valid(form)
 
+#FOR UPDATING A PHOTO POST (PHOTO,CAPTION,DRAFT,TAGS) DONE BY LOGGED IN SPECIFIC USER OONLY
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = photos
     fields= ['image','caption','is_draft','tags']
@@ -81,6 +89,8 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
+#FOR DELETING A PHOTO POST (PHOTO,CAPTION,DRAFT,TAGS) DONE BY LOGGED IN SPECIFIC USER OONLY
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = photos
     success_url = '/'
@@ -97,6 +107,7 @@ def about(request):
     return render(request,'photos/about.html',{'title':'About'})
 
 
+#FOR JWT AUTHENTICATION 
 class HelloView(APIView):
     permission_classes = (IsAuthenticated,)
 

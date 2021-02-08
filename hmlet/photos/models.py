@@ -7,12 +7,7 @@ from datetime import datetime, date
 from django.core.exceptions import ValidationError
 from taggit.managers import TaggableManager
 
-# from django.contrib.auth.models import settings
-
 User = settings.AUTH_USER_MODEL
-
-# def upload_location(instance, filename):
-#     return  'user-uploaded-photos/%s/%s' %(instance.user.Praveen, filename)
 
 class photos(models.Model):
     author = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -28,6 +23,7 @@ class photos(models.Model):
     # def __str__(self):
     #     return f'{self.user.username} photos'
 
+    # FUNCTION WHICH IS USED TO SAVE THE PHOTO ACCORDING TO THE PREDEFIEND VALUES , 
     def save(self, *args, **kwargs):
         super(photos, self).save(*args, **kwargs)
         
@@ -38,6 +34,7 @@ class photos(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
     
+    # FUNCTION USED TO VALIDATE THE IMAGE SIZE 
     def validate_image(self, *args, **kwargs):
         image_width,image_height = get_image_dimensions(image)
         if image_width > settings.MAX_IMAGE_WIDTH:
@@ -47,8 +44,6 @@ class photos(models.Model):
         if image.size > settings.MAX_IMAGE_SIZE:
             raise ValidationError("Image size can not exceed 2 megabyte")
         
-
-    
     def get_absolute_url(self):
         return reverse('post-detail',kwargs={'pk':self.pk})
 
@@ -58,4 +53,8 @@ class PostImage(models.Model):
 
     def __str__(self):
         return f'{self.images} PostImage'
+
+
+
+
 

@@ -2,8 +2,7 @@ from django import forms
 from .models import *
 
 
-# class DocumentForm(forms.Form):
-#     docfile = forms.FileField(label='Select a file',)
+#FORM WHICH HAS THE FIELDS FOR A NEW POST 
 
 class DocumentForm(forms.Form):
 
