@@ -1,4 +1,6 @@
 from django.shortcuts import render, get_object_or_404
+import base64
+import re
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.http import HttpResponse
